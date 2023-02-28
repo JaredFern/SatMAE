@@ -240,14 +240,21 @@ class CustomDatasetFromImagesTemporal(SatelliteDataset):
         # Get image name from the pandas df
         single_image_name_1 = self.image_arr[index]
 
-        suffix = single_image_name_1[-15:]
-        prefix = single_image_name_1[:-15].rsplit('_', 1)
+        suffix = single_image_name_1[-10:]
+        prefix = single_image_name_1[:-10].rsplit('_', 1)
         regexp = '{}_*{}'.format(prefix[0], suffix)
         regexp = os.path.join(self.dataset_root_path, regexp)
         single_image_name_1 = os.path.join(self.dataset_root_path, single_image_name_1)
         temporal_files = glob(regexp)
 
-        temporal_files.remove(single_image_name_1)
+        try: 
+            temporal_files.remove(single_image_name_1)
+        except:
+            print(single_image_name_1)
+            
+        if not os.path.exists(single_image_name_1):
+            single_image_name_1 = single_image_name_1[:-10] + "_rgb.jpg"
+        
         if temporal_files == []:
             single_image_name_2 = single_image_name_1
             single_image_name_3 = single_image_name_1
